@@ -207,3 +207,28 @@ print(head(results$ranks, 10))
 
 # 5. Plot (Uncomment to render)
 # plot_model_diagnostics(results$fit, results$full_data)
+
+# ==============================================================================
+# CLEAN BGLR SPACE
+# ==============================================================================
+clean_bglr_traces <- function(prefix = "") {
+  # Define the patterns BGLR uses (adjust prefix if you used 'saveAt' with a custom name)
+  bglr_patterns <- paste0(
+    "^", prefix, "ETA_.*\\.dat$|",  # ETA trace files (varU, varB, etc.)
+    "^", prefix, "varE\\.dat$|",    # Residual variance
+    "^", prefix, "mu\\.dat$"        # Intercept
+  )
+  
+  # Find matching files in the current working directory
+  files_to_remove <- list.files(pattern = bglr_patterns, full.names = TRUE)
+  
+  if (length(files_to_remove) > 0) {
+    file.remove(files_to_remove)
+    cat(sprintf("Successfully removed %d BGLR trace files.\n", length(files_to_remove)))
+  } else {
+    cat("No BGLR trace files found in the current directory.\n")
+  }
+}
+
+# Execute the cleanup
+clean_bglr_traces()
